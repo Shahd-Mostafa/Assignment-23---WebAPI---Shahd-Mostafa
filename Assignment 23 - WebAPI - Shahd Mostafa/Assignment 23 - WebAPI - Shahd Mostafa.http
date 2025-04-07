@@ -1,0 +1,6 @@
+@Assignment_23___WebAPI___Shahd_Mostafa_HostAddress = http://localhost:5283
+
+GET {{Assignment_23___WebAPI___Shahd_Mostafa_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
