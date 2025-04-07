@@ -1,5 +1,8 @@
 
 
+using Domain.Contracts;
+using Persistence.Repositories;
+
 namespace Assignment_23___WebAPI___Shahd_Mostafa
 {
     public class Program
@@ -16,6 +19,8 @@ namespace Assignment_23___WebAPI___Shahd_Mostafa
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped(typeof(IGenericRepository<,>),typeof(GenericRepository<,>));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
