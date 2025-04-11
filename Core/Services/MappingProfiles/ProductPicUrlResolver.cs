@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Services.MappingProfiles
 {
-    public class ProductPicUrlResolver :IValueResolver<Products, ProductResultDto, string>
+    public class ProductPicUrlResolver(IConfiguration config) :IValueResolver<Products, ProductResultDto, string>
     {
         public string Resolve(Products source, ProductResultDto destination, string destMember, ResolutionContext context)
         {
             if (!string.IsNullOrEmpty(source.PictureUrl))
             {
-                return Path.Combine("https://localhost:7019/", source.PictureUrl);
+                return $"{config["BaseUrl"]}{source.PictureUrl}";
             }
             return null!;
         }
