@@ -1,4 +1,5 @@
 ﻿using Services.Specification;
+using Shared.SpecificationParameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace Services
 {
     public class ProductService(IUnitOfWork _unitOfWork,IMapper _mapper) : IProductServices
     {
-        public async Task<IEnumerable<ProductResultDto>> GetAllProductAsync()
+        public async Task<IEnumerable<ProductResultDto>> GetAllProductAsync(ProductSpecificationParameters specificationParameters)
         {
             // specs
-            var specs = new ProductWithBrandAndTypeSpecification();
+            var specs = new ProductWithBrandAndTypeSpecification(specificationParameters);
             var products = await _unitOfWork.GetRepository<Products, int>().GetAllAsync(specs);
             var productsDto = _mapper.Map<IEnumerable<ProductResultDto>>(products);
             return productsDto;
