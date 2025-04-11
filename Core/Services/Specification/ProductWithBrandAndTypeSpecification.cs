@@ -16,7 +16,12 @@ namespace Services.Specification
             AddInclude(p => p.Type);
         }
 
-        public ProductWithBrandAndTypeSpecification(ProductSpecificationParameters specs) : base(p=>(!specs.BrandId.HasValue || p.BrandId== specs.BrandId.Value)&& (!specs.TypeId.HasValue || p.TypeId == specs.TypeId.Value))
+        public ProductWithBrandAndTypeSpecification(ProductSpecificationParameters specs) : base(
+            p=>(!specs.BrandId.HasValue || p.BrandId== specs.BrandId.Value)&&
+            (!specs.TypeId.HasValue || p.TypeId == specs.TypeId.Value)&&
+            (string.IsNullOrEmpty(specs.Search) || p.Description.ToLower().Trim().Contains(specs.Search.ToLower().Trim()))&&
+            (string.IsNullOrEmpty(specs.Search) || p.Name.ToLower().Trim().Contains(specs.Search.ToLower().Trim()))
+            )
         {
             AddInclude(p => p.Brand);
             AddInclude(p => p.Type);

@@ -11,6 +11,7 @@ namespace Shared.SpecificationParameters
         public int? BrandId { get; set; }
         public int? TypeId { get; set; }
         public ProductSort? Sort { get; set; }
+        public string? Search { get; set; }
     }
     public enum ProductSort
     {
