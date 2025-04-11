@@ -10,7 +10,10 @@ namespace Services.MappingProfiles
     {
         public ProductProfile()
         {
-            CreateMap<Products, ProductResultDto>();
+            CreateMap<Products, ProductResultDto>()
+                .ForMember(pr=>pr.BrandName,options=>options.MapFrom(p=>p.Brand.Name))
+                .ForMember(pr => pr.TypeName, options => options.MapFrom(p => p.Type.Name))
+                .ForMember(pr => pr.PictureUrl, options => options.MapFrom<ProductPicUrlResolver>());
             CreateMap<ProductBrand, BrandResultDto>();
             CreateMap<ProductType, TypeResultDto>();
         }
