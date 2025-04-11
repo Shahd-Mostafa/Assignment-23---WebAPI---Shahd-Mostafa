@@ -10,4 +10,8 @@
     <Folder Include="Exceptions\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Services.Abstraction\Services.Abstraction.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Services.Specification;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,9 @@ namespace Services
     {
         public async Task<IEnumerable<ProductResultDto>> GetAllProductAsync()
         {
-            var products = await _unitOfWork.GetRepository<Products, int>().GetAllAsync();
+            // specs
+            var specs = new ProductWithBrandAndTypeSpecification();
+            var products = await _unitOfWork.GetRepository<Products, int>().GetAllAsync(specs);
             var productsDto = _mapper.Map<IEnumerable<ProductResultDto>>(products);
             return productsDto;
         }
@@ -25,7 +28,8 @@ namespace Services
 
         public async Task<ProductResultDto> GetProductByIdAsync(int id)
         {
-            var product = await _unitOfWork.GetRepository<Products, int>().GetAsync(id);
+            var specs = new ProductWithBrandAndTypeSpecification(id);
+            var product = await _unitOfWork.GetRepository<Products, int>().GetAsync(specs);
             var productDto = _mapper.Map<ProductResultDto>(product);
             return productDto;
 
