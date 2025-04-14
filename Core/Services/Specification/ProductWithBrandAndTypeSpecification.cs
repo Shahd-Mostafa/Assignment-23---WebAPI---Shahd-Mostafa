@@ -46,6 +46,7 @@ namespace Services.Specification
                         break;
                 }
             }
+            AddPagination(specs.PageSize * (specs.PageIndex - 1), specs.PageSize);
         }
     }
 }

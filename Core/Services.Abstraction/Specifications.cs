@@ -19,6 +19,10 @@ namespace Services.Abstraction
         public Expression<Func<T, object>>? OrderBy { get; private set; }
         public Expression<Func<T, object>>? OrderByDescending { get; private set; }
 
+        public int Take { get; private set; }
+        public int Skip { get; private set; }
+        public bool IsPaginated { get; private set; }
+
         protected void AddInclude(Expression<Func<T, object>> expression)
         {
             Include.Add(expression);
@@ -32,6 +36,13 @@ namespace Services.Abstraction
         protected void AddOrderByDescending(Expression<Func<T, object>> expression)
         {
             OrderByDescending = expression;
+        }
+
+        protected void AddPagination(int skip, int take)
+        {
+            Skip = skip;
+            Take = take;
+            IsPaginated = true;
         }
     }
 }

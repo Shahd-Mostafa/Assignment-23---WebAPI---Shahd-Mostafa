@@ -10,13 +10,16 @@ namespace Services
 {
     public class ProductService(IUnitOfWork _unitOfWork,IMapper _mapper) : IProductServices
     {
-        public async Task<IEnumerable<ProductResultDto>> GetAllProductAsync(ProductSpecificationParameters specificationParameters)
+        public async Task<PaginatedResult<ProductResultDto>> GetAllProductAsync(ProductSpecificationParameters specificationParameters)
         {
             // specs
             var specs = new ProductWithBrandAndTypeSpecification(specificationParameters);
             var products = await _unitOfWork.GetRepository<Products, int>().GetAllAsync(specs);
+            var productCount = await _unitOfWork.GetRepository<Products, int>().CountAsync(new ProductCountSpecification(specificationParameters));
             var productsDto = _mapper.Map<IEnumerable<ProductResultDto>>(products);
-            return productsDto;
+            return new PaginatedResult<ProductResultDto>
+                (specificationParameters.PageIndex,specificationParameters.PageSize, productCount, productsDto
+                );
         }
 
         public async Task<IEnumerable<BrandResultDto>> GetProductBrandsAsync()
