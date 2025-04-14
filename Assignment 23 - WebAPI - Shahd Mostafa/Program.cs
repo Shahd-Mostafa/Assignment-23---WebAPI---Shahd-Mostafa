@@ -1,5 +1,7 @@
 
 
+using Assignment_23___WebAPI___Shahd_Mostafa.middlewares;
+
 namespace Assignment_23___WebAPI___Shahd_Mostafa
 {
     public class Program
@@ -28,6 +30,7 @@ namespace Assignment_23___WebAPI___Shahd_Mostafa
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+            app.UseMiddleware<GlobalErrorHandelingMiddleware>();
             app.UseStaticFiles();
 
             // Configure the HTTP request pipeline.
