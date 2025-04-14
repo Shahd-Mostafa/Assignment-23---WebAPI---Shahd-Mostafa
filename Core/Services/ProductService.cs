@@ -1,4 +1,5 @@
-﻿using Services.Specification;
+﻿using Domain.Exceptions;
+using Services.Specification;
 using Shared.SpecificationParameters;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace Services
             var specs = new ProductWithBrandAndTypeSpecification(id);
             var product = await _unitOfWork.GetRepository<Products, int>().GetAsync(specs);
             var productDto = _mapper.Map<ProductResultDto>(product);
-            return productDto;
+            return productDto ?? throw new ProductNotFoundException(id);
 
         }
 

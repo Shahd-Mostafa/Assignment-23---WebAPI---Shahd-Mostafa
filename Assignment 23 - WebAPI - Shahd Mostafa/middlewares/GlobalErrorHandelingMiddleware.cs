@@ -1,4 +1,6 @@
-﻿using Shared.ErrorModels;
+﻿using Domain.Exceptions;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Shared.ErrorModels;
 using System.Net;
 
 namespace Assignment_23___WebAPI___Shahd_Mostafa.middlewares
@@ -27,13 +29,36 @@ namespace Assignment_23___WebAPI___Shahd_Mostafa.middlewares
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             // change status code to 500
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            context.Response.ContentType = "application/json";
-            var error = new ErrorDetails()
+            //context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            //context.Response.ContentType = "application/json";
+            //var error = new ErrorDetails()
+            //{
+            //    StatusCode = 500,
+            //    Message = "Internal Server Error",
+            //    Details = exception.Message,
+            //};
+
+            context.Response.StatusCode= exception switch
             {
-                StatusCode = 500,
-                Message = "Internal Server Error",
-                Details = exception.Message,
+                // add more exception types
+                NotFoundException => (int)HttpStatusCode.NotFound,
+                _=> (int)HttpStatusCode.InternalServerError
+            };
+            context.Response.ContentType = "application/json";
+            var error = exception switch
+            {
+                NotFoundException => new ErrorDetails()
+                {
+                    StatusCode = context.Response.StatusCode,
+                    Message = "Not Found",
+                    Details = exception.Message,
+                },
+                _ => new ErrorDetails()
+                {
+                    StatusCode = context.Response.StatusCode,
+                    Message = "Internal Server Error",
+                    Details = exception.Message,
+                }
             };
             await context.Response.WriteAsJsonAsync(error);
         }
