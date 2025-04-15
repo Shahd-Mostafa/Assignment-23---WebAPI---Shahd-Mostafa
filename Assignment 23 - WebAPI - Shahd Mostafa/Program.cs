@@ -1,6 +1,8 @@
 
 
+using Assignment_23___WebAPI___Shahd_Mostafa.Factories;
 using Assignment_23___WebAPI___Shahd_Mostafa.middlewares;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment_23___WebAPI___Shahd_Mostafa
 {
@@ -26,6 +28,10 @@ namespace Assignment_23___WebAPI___Shahd_Mostafa
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
             builder.Services.AddAutoMapper(typeof(ServicesAssembly).Assembly);
             #endregion
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = ApiresponseFactory.CustomValidationError;
+            });
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

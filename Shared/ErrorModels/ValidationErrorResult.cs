@@ -6,10 +6,16 @@ using System.Threading.Tasks;
 
 namespace Shared.ErrorModels
 {
-    public class ErrorDetails
+    public class ValidationErrorResult
     {
         public int StatusCode { get; set; }
         public string Message { get; set; }
-        public string Details { get; set; }
+        public IEnumerable<validationError> Errors { get; set; }
+    }
+
+    public class validationError
+    {
+        public string Field { get; set; }
+        public IEnumerable<String> Errors { get; set; }
     }
 }

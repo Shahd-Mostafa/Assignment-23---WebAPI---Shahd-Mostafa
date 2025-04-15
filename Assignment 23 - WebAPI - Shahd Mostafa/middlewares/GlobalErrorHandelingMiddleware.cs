@@ -19,6 +19,10 @@ namespace Assignment_23___WebAPI___Shahd_Mostafa.middlewares
             try
             {
                 await _next(context);
+                if(context.Response.StatusCode == (int)HttpStatusCode.NotFound)
+                {
+                    await HandleNotFoundEndpointAsync(context);
+                }
             }
             catch (Exception ex)
             {
@@ -26,6 +30,19 @@ namespace Assignment_23___WebAPI___Shahd_Mostafa.middlewares
                 await HandleExceptionAsync(context, ex);
             }
         }
+
+        private async Task HandleNotFoundEndpointAsync(HttpContext context)
+        {
+            context.Response.ContentType = "application/json";
+            var response = new ErrorDetails()
+            {
+                StatusCode = (int) HttpStatusCode.NotFound,
+                Message = "Endpoint Not Found",
+                Details = $"Endpoint {context.Request.Path} not found"
+            };
+            await context.Response.WriteAsJsonAsync(response);
+        }
+
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             // change status code to 500
