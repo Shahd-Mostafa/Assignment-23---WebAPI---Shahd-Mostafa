@@ -1,4 +1,6 @@
-﻿using Shared.SpecificationParameters;
+﻿using Microsoft.AspNetCore.Http;
+using Shared.ErrorModels;
+using Shared.SpecificationParameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +9,7 @@ using System.Threading.Tasks;
 
 namespace Present
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductsController(IServiceManager _serviceManager) :ControllerBase
+    public class ProductsController(IServiceManager _serviceManager) :ApiController
     {
         [HttpGet]
         public async Task<ActionResult<PaginatedResult<ProductResultDto>>> GetAllProduct([FromQuery]ProductSpecificationParameters specificationParameters) => Ok(await _serviceManager.productServices.GetAllProductAsync(specificationParameters));
