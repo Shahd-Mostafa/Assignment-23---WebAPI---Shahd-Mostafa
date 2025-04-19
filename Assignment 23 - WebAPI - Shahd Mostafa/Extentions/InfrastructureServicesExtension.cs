@@ -13,6 +13,7 @@ namespace Assignment_23___WebAPI___Shahd_Mostafa.Extentions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
             services.AddScoped<IBasketRepository, BasketRepository>();
+            services.AddScoped<ICacheRepository, CacheRepository>();
             services.AddSingleton<IConnectionMultiplexer>(
                 _ =>
 

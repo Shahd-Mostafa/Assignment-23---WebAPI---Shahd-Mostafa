@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Present.Attributes;
 using Shared.ErrorModels;
 using Shared.SpecificationParameters;
 using System;
@@ -12,6 +13,7 @@ namespace Present
     public class ProductsController(IServiceManager _serviceManager) :ApiController
     {
         [HttpGet]
+        [RedisCacheAttributes(40)]
         public async Task<ActionResult<PaginatedResult<ProductResultDto>>> GetAllProduct([FromQuery]ProductSpecificationParameters specificationParameters) => Ok(await _serviceManager.productServices.GetAllProductAsync(specificationParameters));
 
         [HttpGet("id")]

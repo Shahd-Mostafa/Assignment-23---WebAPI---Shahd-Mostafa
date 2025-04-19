@@ -11,7 +11,7 @@ namespace Services
         public Task<string?> GetCachedItem(string key)
             => _cacheRepository.GetAsync(key);
 
-        public Task SetCacheValue(string key, string value, TimeSpan duration)
-            => _cacheRepository.SetAsync(key, value, duration);
+        public async Task SetCacheValue(string key, object value, TimeSpan duration)
+            => await _cacheRepository.SetAsync(key, value, duration);
     }
 }

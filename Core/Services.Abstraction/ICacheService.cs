@@ -8,7 +8,7 @@ namespace Services.Abstraction
 {
     public interface ICacheService
     {
-        Task SetCacheValue(string key, string value, TimeSpan duration);
+        Task SetCacheValue(string key, object value, TimeSpan duration);
         Task<string?> GetCachedItem(string key);
     }
 }
