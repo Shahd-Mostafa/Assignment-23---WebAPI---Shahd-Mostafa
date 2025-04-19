@@ -10,7 +10,7 @@ namespace Persistence.Repositories
 {
     public class BasketRepository(IConnectionMultiplexer connectionMultiplexer) : IBasketRepository
     {
-        private readonly IDatabase _database;
+        private readonly IDatabase _database= connectionMultiplexer.GetDatabase();
         public Task<bool> DeleteBasketAsync(string id)
             => _database.KeyDeleteAsync(id);
 

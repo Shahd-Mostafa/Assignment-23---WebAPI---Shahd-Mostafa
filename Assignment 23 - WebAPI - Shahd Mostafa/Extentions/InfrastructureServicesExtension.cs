@@ -1,4 +1,6 @@
-﻿namespace Assignment_23___WebAPI___Shahd_Mostafa.Extentions
+﻿using StackExchange.Redis;
+
+namespace Assignment_23___WebAPI___Shahd_Mostafa.Extentions
 {
     public static class InfrastructureServicesExtension
     {
@@ -10,6 +12,12 @@
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
+            services.AddScoped<IBasketRepository, BasketRepository>();
+            services.AddSingleton<IConnectionMultiplexer>(
+                _ =>
+
+                    ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis")!)
+                );
             return services;
         }
     }
