@@ -9,6 +9,7 @@ namespace Assignment_23___WebAPI___Shahd_Mostafa.Extentions
             using var scope = app.Services.CreateScope();
             var DbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
             await DbInitializer.InitializeAsync();
+            await DbInitializer.InitializeIdentityAsync();
             return app;
         }
 

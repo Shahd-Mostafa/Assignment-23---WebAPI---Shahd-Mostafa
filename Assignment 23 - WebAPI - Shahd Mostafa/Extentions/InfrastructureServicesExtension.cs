@@ -1,4 +1,6 @@
-﻿using Persistence.Identity;
+﻿using Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
+using Persistence.Identity;
 using StackExchange.Redis;
 
 namespace Assignment_23___WebAPI___Shahd_Mostafa.Extentions
@@ -21,8 +23,22 @@ namespace Assignment_23___WebAPI___Shahd_Mostafa.Extentions
             services.AddSingleton<IConnectionMultiplexer>(
                 _ =>
 
-                    ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis")!)
-                );
+                    ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis")!));
+            services.AddIdentityConfiguration();
+            return services;
+        }
+
+        public static IServiceCollection AddIdentityConfiguration(this IServiceCollection services)
+        {
+            services.AddIdentity<User, IdentityRole>(options =>
+                {
+                    options.Password.RequireLowercase = true;
+                    options.Password.RequireUppercase = true;
+                    options.Password.RequireDigit = true;
+                    options.Password.RequireNonAlphanumeric = true;
+                    options.User.RequireUniqueEmail = true;
+                }
+            ).AddEntityFrameworkStores<StoreIdentityDbContext>();
             return services;
         }
     }
