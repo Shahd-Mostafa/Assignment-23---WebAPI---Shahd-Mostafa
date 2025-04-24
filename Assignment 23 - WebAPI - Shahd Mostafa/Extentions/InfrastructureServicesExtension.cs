@@ -1,4 +1,5 @@
-﻿using StackExchange.Redis;
+﻿using Persistence.Identity;
+using StackExchange.Redis;
 
 namespace Assignment_23___WebAPI___Shahd_Mostafa.Extentions
 {
@@ -8,6 +9,9 @@ namespace Assignment_23___WebAPI___Shahd_Mostafa.Extentions
         {
             services.AddDbContext<StoreDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<StoreIdentityDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("IdentityConnection")));
 
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
