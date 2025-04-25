@@ -2,11 +2,14 @@
 using Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,7 +31,7 @@ namespace Services
                 user.Id,
                 user.DisplayName ?? " ",
                 user.Email ?? " ",
-                "Token"
+                await CreateTokenAsync(user)
             );
         }
 
@@ -58,8 +61,33 @@ namespace Services
                 user.Id,
                 user.DisplayName ?? " ",
                 user.Email ?? " ",
-                "Token"
+                await CreateTokenAsync(user)
             );
+        }
+        private async Task<string> CreateTokenAsync(User user)
+        {
+            var authClaims = new List<Claim>
+            {
+                new Claim("userId",user.Id),
+                new Claim(ClaimTypes.Name,user.UserName ?? " "),
+                new Claim(ClaimTypes.Email,user.Email?? " ")
+            };
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret ultra max password key with anything"));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                issuer: "http://localhost:5000",
+                audience: "myAudience",
+                expires: DateTime.Now.AddDays(30),
+                claims: authClaims,
+                notBefore: DateTime.Now,
+                signingCredentials: creds
+            );
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
