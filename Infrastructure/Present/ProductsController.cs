@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Present.Attributes;
 using Shared.ErrorModels;
 using Shared.SpecificationParameters;
@@ -16,7 +17,8 @@ namespace Present
         [RedisCacheAttributes(40)]
         public async Task<ActionResult<PaginatedResult<ProductResultDto>>> GetAllProduct([FromQuery]ProductSpecificationParameters specificationParameters) => Ok(await _serviceManager.productServices.GetAllProductAsync(specificationParameters));
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<ProductResultDto>> GetProductById(int id) => Ok(await _serviceManager.productServices.GetProductByIdAsync(id));
 
         [HttpGet("brand")]

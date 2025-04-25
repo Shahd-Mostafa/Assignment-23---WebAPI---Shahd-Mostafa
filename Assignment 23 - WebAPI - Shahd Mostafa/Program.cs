@@ -15,7 +15,7 @@ namespace Assignment_23___WebAPI___Shahd_Mostafa
 
             // Add services to the container.
 
-            builder.Services.AddCoreServices().AddInfrastructureServices(builder.Configuration).AddPresentationServices();
+            builder.Services.AddCoreServices(builder.Configuration).AddInfrastructureServices(builder.Configuration).AddPresentationServices();
 
             //builder.Services.AddControllers();
             //#region persistence

@@ -2,6 +2,7 @@
 using Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,9 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    internal class AuthenticationService(UserManager<User> _userManager ) : IAuthenticationService
+    internal class AuthenticationService(UserManager<User> _userManager, IOptions<JwtOptions> options) : IAuthenticationService
     {
+        private readonly JwtOptions _jwtOptions = options.Value;
         public async Task<UserResultDto> LoginAsync(LoginDto loginDto)
         {
             var validEmail = new EmailAddressAttribute().IsValid(loginDto.Email);
@@ -77,12 +79,12 @@ namespace Services
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
             }
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret ultra max password key with anything"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
-                issuer: "http://localhost:5000",
-                audience: "myAudience",
-                expires: DateTime.Now.AddDays(30),
+                issuer: _jwtOptions.Issuer,
+                audience: _jwtOptions.Audience,
+                expires: DateTime.Now.AddDays(_jwtOptions.DurationInDays),
                 claims: authClaims,
                 notBefore: DateTime.Now,
                 signingCredentials: creds
