@@ -70,6 +70,12 @@ namespace Assignment_23___WebAPI___Shahd_Mostafa.middlewares
                     Message = "Not Found",
                     Details = exception.Message,
                 },
+                UnAuthorizedException => new ErrorDetails()
+                {
+                    StatusCode = context.Response.StatusCode,
+                    Message = "UnAuthorized",
+                    Details = exception.Message,
+                },
                 _ => new ErrorDetails()
                 {
                     StatusCode = context.Response.StatusCode,
