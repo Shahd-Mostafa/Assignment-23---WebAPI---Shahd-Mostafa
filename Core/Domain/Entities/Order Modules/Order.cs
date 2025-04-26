@@ -42,15 +42,10 @@ namespace Domain.Entities.Order_Modules
         public decimal SubTotal { get; set; }
         public decimal Total { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
-        public DeliveryMethod DeliveryMethod { get; set; } // nav property
+        public DeliveryMethod? DeliveryMethod { get; set; } // nav property
+        public int? DeliveryMethodId { get; set; }
         public string PaymentIntentId { get; set; }
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
         public IEnumerable<OrderItems> OrderItems { get; set; } // nav property
-    }
-    public enum PaymentStatus
-    {
-        Pending =0,
-        PaymentRecieved,
-        PaymentFailed,
     }
 }
