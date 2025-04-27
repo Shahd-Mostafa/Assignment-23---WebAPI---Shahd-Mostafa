@@ -15,6 +15,7 @@ namespace Services
         private readonly Lazy<IBasketService> _basketServices = new Lazy<IBasketService>(() => new BasketService(_basketRepository, _mapper));
         private readonly Lazy<ICacheService> _cacheServices = new Lazy<ICacheService>(() => new CacheService(_cacheRepository));
         private readonly Lazy<IAuthenticationService> _authenticationServices = new Lazy<IAuthenticationService>(() => new AuthenticationService(_userManager,_options));
+        private readonly Lazy<IOrderService> _orderServices = new Lazy<IOrderService>(() => new OrderService(_unitOfWork, _mapper, _basketRepository));
         public IProductServices productServices => _productServices.Value;
 
         public IBasketService basketServices => _basketServices.Value;
@@ -22,5 +23,7 @@ namespace Services
         public ICacheService cacheServices => _cacheServices.Value;
 
         public IAuthenticationService authenticationServices => _authenticationServices.Value;
+
+        public IOrderService orderServices => _orderServices.Value;
     }
 }

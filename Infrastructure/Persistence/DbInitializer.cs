@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Identity;
+using Domain.Entities.Order_Modules;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
 using Persistence.Identity;
@@ -58,7 +59,8 @@ namespace Persistence
                 await SeedProductBrands(_context);
                 await SeedProductTypes(_context);
                 await SeedProducts(_context);
-               
+                await SeedDeliveryMethods(_context);
+
 
             }
             catch (Exception ex)
@@ -105,6 +107,21 @@ namespace Persistence
                 if (products != null && products.Any())
                 {
                     await _context.Products.AddRangeAsync(products);
+                    await _context.SaveChangesAsync();
+                }
+            }
+        }
+
+        private async Task SeedDeliveryMethods(StoreDbContext context)
+        {
+
+            if (!_context.DeliveryMethods.Any())
+            {
+                var deliveryMethodsJson = await File.ReadAllTextAsync(@"../Infrastructure/Persistence/Data/Seeding/delivery.json");
+                var deliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryMethodsJson);
+                if (deliveryMethods != null && deliveryMethods.Any())
+                {
+                    await _context.DeliveryMethods.AddRangeAsync(deliveryMethods);
                     await _context.SaveChangesAsync();
                 }
             }
