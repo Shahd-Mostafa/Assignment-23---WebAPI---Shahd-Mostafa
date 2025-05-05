@@ -16,9 +16,36 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    internal class AuthenticationService(UserManager<User> _userManager, IOptions<JwtOptions> options) : IAuthenticationService
+    internal class AuthenticationService(UserManager<User> _userManager, IOptions<JwtOptions> options, IMapper _mapper) : IAuthenticationService
     {
         private readonly JwtOptions _jwtOptions = options.Value;
+
+        public async Task<UserResultDto> GetcurrentUserAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email) ?? throw new NotFoundException($"User not found with email: {email}");
+            return new UserResultDto
+            (
+                user.Id,
+                user.DisplayName ?? " ",
+                user.Email ?? " ",
+                await CreateTokenAsync(user)
+            );
+        }
+
+        public async Task<AddressDto> GetUserAddress(string email)
+        {
+            var user= await _userManager.Users.Include(u => u.Address)
+                .FirstOrDefaultAsync(u => u.Email == email) ??
+                throw new NotFoundException($"User not found with email: {email}");
+            return _mapper.Map<AddressDto>(user.Address);
+        }
+
+        public async Task<bool> isEmailExists(string email)
+        {
+            var existingEmail = await _userManager.Users.AnyAsync(u => u.Email == email);
+            return existingEmail;
+        }
+
         public async Task<UserResultDto> LoginAsync(LoginDto loginDto)
         {
             var validEmail = new EmailAddressAttribute().IsValid(loginDto.Email);
@@ -66,6 +93,19 @@ namespace Services
                 await CreateTokenAsync(user)
             );
         }
+
+        public async Task<AddressDto> UpdateUserAddress(string email, CreateAddressDto updateAddressDto)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            user.Address = _mapper.Map<Address>(updateAddressDto);
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                throw new BadRequestException(string.Join("\n", result.Errors.Select(e => e.Description)));
+            }
+            return _mapper.Map<AddressDto>(user.Address);
+        }
+
         private async Task<string> CreateTokenAsync(User user)
         {
             var authClaims = new List<Claim>
