@@ -1,5 +1,7 @@
 ﻿using Domain.Entities.Order_Modules;
 using Domain.Exceptions;
+using Microsoft.Extensions.Logging;
+using Services.Specification;
 using Stripe;
 using System;
 using System.Collections.Generic;
@@ -57,6 +59,42 @@ namespace Services
             }
             await _basketRepository.UpdateBasketAsync(basket);
             return _mapper.Map<BasketDto>(basket);
+        }
+
+        public async Task UpdateOrderPaymentStatus(string requestBody, string signature)
+        {
+            try
+            {
+                var endpointSecret = _configuration["Stripe:EndPointSecret"];
+                var stripeEvent = EventUtility.ConstructEvent(requestBody,
+                signature, endpointSecret);
+                var paymentIntent = stripeEvent.Data.Object as PaymentIntent;
+                if (stripeEvent.Type == EventTypes.PaymentIntentSucceeded)
+                {
+                    await UpdatePaymentStatus(paymentIntent!.Id, PaymentStatus.PaymentRecieved);
+                }
+                else if (stripeEvent.Type == EventTypes.PaymentIntentPaymentFailed)
+                {
+                    await UpdatePaymentStatus(paymentIntent!.Id, PaymentStatus.PaymentFailed);
+                }
+                else
+                {
+                    Console.WriteLine($"Unhandled event type: {stripeEvent.Type}");
+                }
+            }
+            catch (StripeException ex)
+            {
+                Console.WriteLine($"Stripe webhook error: {ex.Message}");
+            }
+        }
+        private async Task UpdatePaymentStatus(string paymentIntentId, PaymentStatus status)
+        {
+            var order = await _unitOfWork.GetRepository<Order, int>()
+                .GetAsync(new OrderWithPaymentIntentSpecification(paymentIntentId))
+                ?? throw new BadRequestException("No order found with this payment id");
+
+            order.PaymentStatus = status;
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }
