@@ -14,6 +14,16 @@ namespace Assignment_23___WebAPI___Shahd_Mostafa.Extentions
                 options.InvalidModelStateResponseFactory = ApiresponseFactory.CustomValidationError;
             });
             services.AddSwaggerConfiguration();
+            services.AddCors(config =>
+            {
+                config.AddPolicy("DefaultPolicy",
+                    options =>
+                    {
+                        options.WithOrigins("http://localhost:4200", "https://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    });
+            });
             return services;
         }
         public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services)

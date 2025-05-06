@@ -21,10 +21,10 @@ namespace Present
         [Authorize]
         public async Task<ActionResult<ProductResultDto>> GetProductById(int id) => Ok(await _serviceManager.productServices.GetProductByIdAsync(id));
 
-        [HttpGet("brand")]
+        [HttpGet("brands")]
         public async Task<ActionResult<IEnumerable<BrandResultDto>>> GetProductBrand()=> Ok(await _serviceManager.productServices.GetProductBrandsAsync());
 
-        [HttpGet("type")]
+        [HttpGet("types")]
         public async Task<ActionResult<IEnumerable<TypeResultDto>>> GetProductType() => Ok(await _serviceManager.productServices.GetProductTypesAsync());
     }
 }

@@ -44,6 +44,7 @@ namespace Assignment_23___WebAPI___Shahd_Mostafa
             //app.UseMiddleware<GlobalErrorHandelingMiddleware>();
             app.UseCustomExceptionMiddleware();
             app.UseStaticFiles();
+            app.UseCors("DefaultPolicy");
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
