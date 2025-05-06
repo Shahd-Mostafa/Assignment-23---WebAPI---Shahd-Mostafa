@@ -27,7 +27,13 @@ namespace Services
             var deliveryMethod= await _unitOfWork.GetRepository<DeliveryMethod,int>().GetAsync(orderRequest.DeliveryMethodId) ??
                 throw new DeliveryMethodNotFoundException(orderRequest.DeliveryMethodId);
             var subTotal = orderItems.Sum(p => p.Quantity * p.Price);
-            var order= new Order(email,address,subTotal, deliveryMethod,orderItems);
+
+            var existingOrder = await _unitOfWork.GetRepository<Order, int>().GetAsync(new OrderWithPaymentIntentSpecification(basket.PaymentIntentId!));
+            if(existingOrder != null)
+            {
+                _unitOfWork.GetRepository<Order, int>().Delete(existingOrder);
+            }
+            var order = new Order(email, address, subTotal, deliveryMethod, basket.PaymentIntentId!, orderItems);
             await _unitOfWork.GetRepository<Order,int>().AddAsync(order);
             await _unitOfWork.SaveChangesAsync();
             var orderResult = _mapper.Map<OrderResultDto>(order);
